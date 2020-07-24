@@ -18,6 +18,7 @@ class ImgCrop extends StatefulWidget {
       this.maximumScale: 2.0,
       this.onImageError,
       this.chipRadius = 150,
+      this.chipHeightRatio = 1.0,
       this.chipShape = 'circle'})
       : assert(image != null),
         assert(maximumScale != null),
@@ -29,6 +30,7 @@ class ImgCrop extends StatefulWidget {
       this.maximumScale: 2.0,
       this.onImageError,
       this.chipRadius = 150,
+      this.chipHeightRatio = 1.0,
       this.chipShape = 'circle'})
       : image = FileImage(file, scale: scale),
         assert(maximumScale != null),
@@ -40,6 +42,7 @@ class ImgCrop extends StatefulWidget {
     AssetBundle bundle,
     String package,
     this.chipRadius = 150,
+    this.chipHeightRatio = 1.0,
     this.maximumScale: 2.0,
     this.onImageError,
     this.chipShape = 'circle',
@@ -192,6 +195,13 @@ class ImgCropState extends State<ImgCrop> with TickerProviderStateMixin, Drag {
     return _surfaceKey.currentContext.size -
         Offset(_kCropHandleSize, _kCropHandleSize);
   }
+  
+  // Make sure if widget.chipHeightRatio between 0 - 1.0
+  double get chipHeightRatio {
+    return widget.chipHeightRatio > 1.0 ? 1.0 
+      : widget.chipHeightRatio < 0.0 ? 0.0
+      : widget.chipHeightRatio;
+  }
 
   void _settleAnimationChanged() {
     setState(() {
@@ -218,7 +228,7 @@ class ImgCropState extends State<ImgCrop> with TickerProviderStateMixin, Drag {
     final width = 1.0 - _areaOffsetRadio;
 
     final height =
-        (imageWidth * viewWidth * width) / (imageHeight * viewHeight * 1.0);
+        (imageWidth * viewWidth * width) / (imageHeight * viewHeight / chipHeightRatio);
     return Rect.fromLTWH((1.0 - width) / 2, (1.0 - height) / 2, width, height);
   }
 
