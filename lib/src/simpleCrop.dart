@@ -6,19 +6,22 @@ const _kCropHandleSize = 10.0;
 
 enum _CropAction { none, moving, scaling }
 
+enum ChipShape { circle, rect }
+
 class ImgCrop extends StatefulWidget {
   final ImageProvider image;
   final double maximumScale;
   final ImageErrorListener onImageError;
   final double chipRadius; // 裁剪半径
-  final String chipShape; // 裁剪区域形状
+  final ChipShape chipShape; // 裁剪区域形状
+
   const ImgCrop(
       {Key key,
       this.image,
       this.maximumScale: 2.0,
       this.onImageError,
       this.chipRadius = 150,
-      this.chipShape = 'circle'})
+      this.chipShape = ChipShape.circle})
       : assert(image != null),
         assert(maximumScale != null),
         super(key: key);
@@ -29,7 +32,7 @@ class ImgCrop extends StatefulWidget {
       this.maximumScale: 2.0,
       this.onImageError,
       this.chipRadius = 150,
-      this.chipShape = 'circle'})
+      this.chipShape = ChipShape.circle})
       : image = FileImage(file, scale: scale),
         assert(maximumScale != null),
         super(key: key);
@@ -42,7 +45,7 @@ class ImgCrop extends StatefulWidget {
     this.chipRadius = 150,
     this.maximumScale: 2.0,
     this.onImageError,
-    this.chipShape = 'circle',
+    this.chipShape = ChipShape.circle,
   })  : image = AssetImage(assetName, bundle: bundle, package: package),
         assert(maximumScale != null),
         super(key: key);
@@ -365,7 +368,7 @@ class _CropPainter extends CustomPainter {
   final Rect area;
   final double scale;
   final double active;
-  final String chipShape;
+  final ChipShape chipShape;
 
   _CropPainter(
       {this.image,
@@ -444,7 +447,7 @@ class _CropPainter extends CustomPainter {
     final _path1 = Path()
       ..addRect(Rect.fromLTRB(0.0, 0.0, rect.width, rect.height));
     Path _path2;
-    if (chipShape == 'rect') {
+    if (chipShape == ChipShape.rect) {
       _path2 = Path()..addRect(boundaries);
     } else {
       _path2 = Path()
@@ -463,7 +466,7 @@ class _CropPainter extends CustomPainter {
       ..color = Colors.white
       ..strokeWidth = 2
       ..style = PaintingStyle.stroke;
-    if (chipShape == 'rect') {
+    if (chipShape == ChipShape.rect) {
       canvas.drawRect(
           Rect.fromLTRB(boundaries.left - 1, boundaries.top - 1,
               boundaries.right + 1, boundaries.bottom + 1),
